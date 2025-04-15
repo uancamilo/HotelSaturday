@@ -3,13 +3,15 @@
 
 
 from domain.models.Guest import Guest
-from domain.service.GuestService import GuestService
+from application.GuestService import GuestService
 from application.GuestInput import GuestInput
+from repository.conexion.Conexion import Conexion
 
 
 class Menu_App:
 
-
+    db = Conexion(host='localhost', port=3307, user='root', password="", database='hotel_saturday')
+    db.connection()
 
     def __init__(self):
         self.guest = Guest(None, None,None,None,None,None,None,None,None)
@@ -28,8 +30,8 @@ class Menu_App:
                 print("Login")
             elif option == 2:
                 print("Registro")
-                self.guest_input.register()
-                self.guest_input.print_data()
+                self.guest_input.register(self.guest,self.db)
+
 
 
 

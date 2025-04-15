@@ -1,29 +1,38 @@
 
 
-from domain.service.GuestService import GuestService
+from application.GuestService import GuestService
+from domain.models.Guest import  Guest
+from repository.persistence.GuestRepository import GuestRepository
 
 class GuestInput:
 
 
     def __init__(self):
-        self.guest_service = GuestService()
+        self.guest = Guest(None,None,None,None ,None,None, None,None,None )
+        self.guest_repository = GuestRepository()
 
 
-    def register(self):
+    def register(self, guest , db):
         id = int(input("Ingrese su documento de identidad"))
-        self.guest_service.register_data.append(id)
+        self.guest.id = id
         name = input("Ingrese su nombre")
-        self.guest_service.register_data.append(name)
+        self.guest.name = name
         last_name = input("Ingrese su apellido")
-        self.guest_service.register_data.append(last_name)
+        self.guest.last_name = last_name
         phone = input("Ingrese su teléfono")
-        self.guest_service.register_data.append(phone)
+        self.guest.phone = phone
         email = input("Ingrese su correo")
-        self.guest_service.register_data.append(email)
+        self.guest.email = email
         password = input("Ingrese su contraseña")
-        self.guest_service.register_data.append(password)
+        self.guest.password = password
         status = input("Seleccione el estado")
-        self.guest_service.register_data.append(status)
+        self.guest.status = status
+        origin = input("Ingrese su ciudad de origen")
+        self.guest.origin = origin
+        occupation = input("Ingrese su ocupacion")
+        self.guest.occupation = occupation
+        self.guest_repository.create_guest_repository(self.guest, db)
+
 
 
     def print_data(self):

@@ -1,19 +1,9 @@
 from domain.models.User import User
 
-
 class Guest(User):
-
-    def __init__(self,id, name , last_name,phone, email, password, status, origin, occupation ):
-        super().__init__(id, name , last_name,phone, email, password, status)
+    def __init__(self, id, name, last_name, phone, email, password, status, origin, occupation):
+        super().__init__(id, name, last_name, phone, email, password, status)
         self._origin = origin
-        self._occupation = occupation
-
-    @property
-    def occupation(self):
-        return self._occupation
-
-    @occupation.setter
-    def occupation(self, occupation):
         self._occupation = occupation
 
     @property
@@ -24,7 +14,13 @@ class Guest(User):
     def origin(self, origin):
         self._origin = origin
 
+    @property
+    def occupation(self):
+        return self._occupation
 
+    @occupation.setter
+    def occupation(self, occupation):
+        self._occupation = occupation
 
-
-
+    def __str__(self):
+        return f"Guest({self._origin}, {self._occupation})"

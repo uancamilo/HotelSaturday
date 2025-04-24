@@ -1,7 +1,3 @@
-
-
-
-
 from domain.models.Guest import Guest
 from application.GuestService import GuestService
 from application.GuestInput import GuestInput
@@ -11,7 +7,7 @@ from repository.conexion.Conexion import Conexion
 class Menu_App:
 
     db = Conexion(host='localhost', port=3307, user='root', password="", database='hotel_saturday')
-    db.connection()
+    db.connect()
 
     def __init__(self):
         self.guest = Guest(None, None,None,None,None,None,None,None,None)

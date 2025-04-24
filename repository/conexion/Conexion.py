@@ -2,13 +2,14 @@ import mysql
 from mysql import connector
 
 class Conexion:
+
     def __init__(self, host, port, user, password, database):
         self.host = host
         self.port = port
         self.user = user
         self.password = password
         self.database = database
-        self.connection = None
+        self.conn = None
 
     def create_database_if_not_exists(self):
         connection = None
@@ -18,13 +19,13 @@ class Conexion:
                 host=self.host,
                 port=self.port,
                 user=self.user,
-                password=self.password
+                password=self.password,
+                database=self.database
             )
-            cursor = connection.cursor()
-            cursor.execute(f"CREATE DATABASE IF NOT EXISTS {self.database}")
-            print(f"Base de datos '{self.database}' verificada/creada")
+            self.conn = connection
+            print("Conexión Establecida")
         except mysql.connector.Error as err:
-            print("Error al crear la base de datos:", err)
+            print("Error al conectar a la base de datos:", err)
         finally:
             if cursor:
                 cursor.close()

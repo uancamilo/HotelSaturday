@@ -29,4 +29,7 @@ class Menu_App:
             elif option == 3:
                 self.db.disconnect()
                 print("Hasta luego")
+            elif option == 4:
+                print("Lista de huéspedes:")
+                self.guest_service.listar_huespedes(self.db)
                 break

@@ -22,3 +22,19 @@ class GuestRepository:
         """
         values_guest = (guest.id, guest.origin, guest.occupation)
         db.execute_query(query_guest, values_guest)
+
+    def listar_huespedes(self, db):
+        query = """
+            SELECT u.id, u.name, u.last_name, u.phone, u.email, g.origin, g.occupation
+            FROM user u
+            INNER JOIN guest g ON u.id = g.id
+        """
+        resultados = db.execute_query(query)
+
+        if not resultados:
+            print("No hay huéspedes registrados.")
+        else:
+            print("Lista de huéspedes:")
+            for r in resultados:
+                print(
+                    f"Cédula: {r[0]}, Nombre: {r[1]} {r[2]}, Tel: {r[3]}, Email: {r[4]}, Origen: {r[5]}, Ocupación: {r[6]}")

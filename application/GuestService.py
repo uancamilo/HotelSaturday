@@ -1,9 +1,5 @@
-
-
 from domain.models.Guest import Guest
-
-
-
+from repository.persistence.GuestRepository import GuestRepository
 
 class GuestService:
 
@@ -11,7 +7,7 @@ class GuestService:
 
     def __init__(self):
         self.guest = Guest(None, None, None, None, None, None, None, None, None)
-
+        self.repo = GuestRepository()
 
     def createGuest(self, guest):
         guest.id = self.register_data[0]
@@ -22,12 +18,9 @@ class GuestService:
         guest.password = self.register_data[5]
         guest.status = self.register_data[6]
 
-    def print_data_service(self,):
+    def listar_huespedes(self, db):
+        self.repo.listar_huespedes(db)
 
+    def print_data_service(self):
         for data in self.register_data:
             print(data)
-
-
-
-
-

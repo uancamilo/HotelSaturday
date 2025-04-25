@@ -19,7 +19,7 @@ class Menu_App:
         init = int(input("Presione 1 para inicializar: "))
 
         while init != 0:
-            option = int(input("1. Login  2. Registro  3. Salir: "))
+            option = int(input("1. Login  2. Registro  3. Salir  4. Listar huéspedes"))
 
             if option == 1:
                 print("Login")

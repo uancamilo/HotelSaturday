@@ -82,10 +82,10 @@ class Conexion:
                 );
                 """,
                 """
-                CREATE TABLE IF NOT EXISTS bedrooms (
+                CREATE TABLE IF NOT EXISTS bedroom (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     number VARCHAR(10) UNIQUE NOT NULL,
-                    type ENUM('single', 'double', 'suite') NOT NULL,
+                    bedroom_type ENUM('single', 'double', 'suite') NOT NULL,
                     price DECIMAL(10,2) NOT NULL,
                     status ENUM('available', 'occupied', 'maintenance') DEFAULT 'available'
                 );
@@ -99,7 +99,7 @@ class Conexion:
                 );
                 """,
                 """
-                CREATE TABLE IF NOT EXISTS bookings (
+                CREATE TABLE IF NOT EXISTS booking (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     user_id INT NOT NULL,
                     bedroom_id INT NOT NULL,

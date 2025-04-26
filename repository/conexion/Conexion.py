@@ -109,7 +109,7 @@ class Conexion:
                     total_price DECIMAL(10,2),
                     status ENUM('confirmed', 'cancelled', 'completed') DEFAULT 'confirmed',
                     FOREIGN KEY (user_id) REFERENCES user(id),
-                    FOREIGN KEY (bedroom_id) REFERENCES bedrooms(id),
+                    FOREIGN KEY (bedroom_id) REFERENCES bedroom(id),
                     FOREIGN KEY (service_id) REFERENCES services(id)
                 );
                 """

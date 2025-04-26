@@ -56,7 +56,7 @@ class Conexion:
 
             queries = [
                 """
-                CREATE TABLE IF NOT EXISTS user (
+                CREATE TABLE IF NOT EXISTS user (   
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     name VARCHAR(100) NOT NULL,
                     last_name VARCHAR(100) NOT NULL,

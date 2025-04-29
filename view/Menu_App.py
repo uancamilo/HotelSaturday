@@ -41,7 +41,7 @@ class Menu_App:
 
             print(
                 f"\n--- Menú Principal Hotel Saturday --- (Usuario: {self.logged_employee.person.name} - Rol: {self.logged_employee.rol})")
-            print("1. Registro de Huésped")
+            print("1. Gestión de Huéspedes")
 
             if self.logged_employee.rol == "superadmin":
                 print("2. Registro de Empleado")
@@ -63,7 +63,7 @@ class Menu_App:
                 continue
 
             if option == 1:
-                self.register_guest()
+                self.menu_huespedes()
             elif option == 2 and self.logged_employee.rol == "superadmin":
                 self.register_employee()
             elif option == 3:
@@ -98,9 +98,37 @@ class Menu_App:
         print(f"\n👋 {self.logged_employee.person.name} ha cerrado sesión.")
         self.logged_employee = None
 
+    def menu_huespedes(self):
+        while True:
+            print("\n--- Gestión de Huéspedes ---")
+            print("1. Registrar Nuevo Huésped")
+            print("2. Listar Huéspedes")
+            print("3. Volver al menú principal")
+            option_str = input("Seleccione una opción: ").strip()
+
+            if not option_str.isdigit():
+                print("❌ Opción inválida.")
+                continue
+
+            option = int(option_str)
+
+            if option == 1:
+                self.register_guest()
+            elif option == 2:
+                self.list_guests()
+            elif option == 3:
+                print("Volviendo al menú principal...")
+                break
+            else:
+                print("❌ Opción no válida.")
+
     def register_guest(self):
         print("\n--- Registro de Nuevo Huésped ---")
         self.guest_input.register(self.db)
+
+    def list_guests(self):
+        print("\n--- Lista de Huéspedes ---")
+        self.guest_service.listar_huespedes(self.db)
 
     def register_employee(self):
         print("\n--- Registro de Nuevo Empleado ---")

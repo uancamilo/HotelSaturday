@@ -1,43 +1,60 @@
-
-
-from application.GuestService import GuestService
-from domain.models.Guest import  Guest
+from domain.models.Guest import Guest
+from domain.models.Person import Person
 from repository.persistence.GuestRepository import GuestRepository
+import re
 
 class GuestInput:
 
-
     def __init__(self):
-        self.guest = Guest(None,None,None,None ,None,None, None,None,None )
         self.guest_repository = GuestRepository()
 
+    def register(self, db):
+        print("\n--- Registro de Nuevo Huésped ---")
 
-    def register(self, guest , db):
-        id = int(input("Ingrese su documento de identidad"))
-        self.guest.id = id
-        name = input("Ingrese su nombre")
-        self.guest.name = name
-        last_name = input("Ingrese su apellido")
-        self.guest.last_name = last_name
-        phone = input("Ingrese su teléfono")
-        self.guest.phone = phone
-        email = input("Ingrese su correo")
-        self.guest.email = email
-        password = input("Ingrese su contraseña")
-        self.guest.password = password
-        status = input("Seleccione el estado")
-        self.guest.status = status
-        origin = input("Ingrese su ciudad de origen")
-        self.guest.origin = origin
-        occupation = input("Ingrese su ocupacion")
-        self.guest.occupation = occupation
-        self.guest_repository.create_guest_repository(self.guest, db)
+        # Capturar ID (debe ser un número)
+        while True:
+            id_input = input("Cédula del huésped: ").strip()
+            if id_input.isdigit():
+                id = int(id_input)
+                break
+            else:
+                print("❌ La cédula debe ser numérica.")
 
+        # Capturar nombre
+        name = input("Nombre del huésped: ").strip()
+        # Capturar apellido
+        last_name = input("Apellido del huésped: ").strip()
+        # Capturar teléfono
+        phone = input("Teléfono del huésped: ").strip()
 
+        # Capturar email con validación
+        while True:
+            email = input("Correo electrónico del huésped: ").strip()
+            if re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                break
+            else:
+                print("❌ Formato de correo inválido. Intente nuevamente.")
 
-    def print_data(self):
-        self.guest_service.print_data_service()
+        # Capturar ciudad de origen
+        origin = input("Ciudad de origen del huésped: ").strip()
+        # Capturar ocupación
+        occupation = input("Ocupación del huésped: ").strip()
 
+        # Crear el objeto Person
+        person = Person(
+            id=id,
+            name=name,
+            last_name=last_name,
+            phone=phone,
+            email=email
+        )
 
+        # Crear el objeto Guest (anidando Person)
+        guest = Guest(
+            person=person,
+            origin=origin,
+            occupation=occupation
+        )
 
-
+        # Registrar en la base de datos
+        self.guest_repository.create_guest_repository(guest, db)

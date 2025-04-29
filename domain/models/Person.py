@@ -1,13 +1,13 @@
-class User:
-    def __init__(self, id, name, last_name, phone, email, password, status):
+class Person:
+
+    def __init__(self, id, name, last_name, phone, email):
         self._id = id
         self._name = name
         self._last_name = last_name
         self._phone = phone
         self._email = email
-        self._password = password
-        self._status = status
 
+    # Getter y Setter para ID
     @property
     def id(self):
         return self._id
@@ -16,6 +16,7 @@ class User:
     def id(self, id):
         self._id = id
 
+    # Getter y Setter para Nombre
     @property
     def name(self):
         return self._name
@@ -24,6 +25,7 @@ class User:
     def name(self, name):
         self._name = name
 
+    # Getter y Setter para Apellido
     @property
     def last_name(self):
         return self._last_name
@@ -32,6 +34,7 @@ class User:
     def last_name(self, last_name):
         self._last_name = last_name
 
+    # Getter y Setter para Teléfono
     @property
     def phone(self):
         return self._phone
@@ -40,6 +43,7 @@ class User:
     def phone(self, phone):
         self._phone = phone
 
+    # Getter y Setter para Email
     @property
     def email(self):
         return self._email
@@ -47,22 +51,3 @@ class User:
     @email.setter
     def email(self, email):
         self._email = email
-
-    @property
-    def password(self):
-        return self._password
-
-    @password.setter
-    def password(self, password):
-        self._password = password
-
-    @property
-    def status(self):
-        return self._status
-
-    @status.setter
-    def status(self, status):
-        self._status = status
-
-    def __str__(self):
-        return f"User({self._name} {self._last_name}, {self._email})"

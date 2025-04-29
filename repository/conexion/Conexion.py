@@ -56,21 +56,12 @@ class Conexion:
 
             queries = [
                 """
-                CREATE TABLE IF NOT EXISTS user (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
+                CREATE TABLE IF NOT EXISTS person (
+                    id INT PRIMARY KEY,
                     name VARCHAR(100) NOT NULL,
                     last_name VARCHAR(100) NOT NULL,
                     phone VARCHAR(20),
-                    email VARCHAR(100) UNIQUE NOT NULL,
-                    password VARCHAR(255) NOT NULL,
-                    status ENUM('active', 'inactive') DEFAULT 'active'
-                );
-                """,
-                """
-                CREATE TABLE IF NOT EXISTS employee (
-                    id INT PRIMARY KEY,
-                    rol VARCHAR(50) NOT NULL,
-                    FOREIGN KEY (id) REFERENCES user(id) ON DELETE CASCADE
+                    email VARCHAR(100) UNIQUE NOT NULL
                 );
                 """,
                 """
@@ -78,7 +69,16 @@ class Conexion:
                     id INT PRIMARY KEY,
                     origin VARCHAR(100),
                     occupation VARCHAR(100),
-                    FOREIGN KEY (id) REFERENCES user(id) ON DELETE CASCADE
+                    FOREIGN KEY (id) REFERENCES person(id) ON DELETE CASCADE
+                );
+                """,
+                """
+                CREATE TABLE IF NOT EXISTS employee (
+                    id INT PRIMARY KEY,
+                    password VARCHAR(255) NOT NULL,
+                    rol VARCHAR(50) NOT NULL,
+                    status ENUM('active', 'inactive') DEFAULT 'active',
+                    FOREIGN KEY (id) REFERENCES person(id) ON DELETE CASCADE
                 );
                 """,
                 """
@@ -108,7 +108,7 @@ class Conexion:
                     check_out DATE NOT NULL,
                     total_price DECIMAL(10,2),
                     status ENUM('confirmed', 'cancelled', 'completed') DEFAULT 'confirmed',
-                    FOREIGN KEY (user_id) REFERENCES user(id),
+                    FOREIGN KEY (user_id) REFERENCES person(id),
                     FOREIGN KEY (bedroom_id) REFERENCES bedroom(id),
                     FOREIGN KEY (service_id) REFERENCES services(id)
                 );

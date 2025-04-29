@@ -1,11 +1,22 @@
-from domain.models.User import User
+from domain.models.Person import Person
 
-class Guest(User):
-    def __init__(self, id, name, last_name, phone, email, password, status, origin, occupation):
-        super().__init__(id, name, last_name, phone, email, password, status)
+class Guest:
+
+    def __init__(self, person, origin, occupation):
+        self._person = person          # Objeto Person asociado
         self._origin = origin
         self._occupation = occupation
 
+    # Getter y Setter para person
+    @property
+    def person(self):
+        return self._person
+
+    @person.setter
+    def person(self, person):
+        self._person = person
+
+    # Getter y Setter para origin
     @property
     def origin(self):
         return self._origin
@@ -14,6 +25,7 @@ class Guest(User):
     def origin(self, origin):
         self._origin = origin
 
+    # Getter y Setter para occupation
     @property
     def occupation(self):
         return self._occupation
@@ -21,6 +33,3 @@ class Guest(User):
     @occupation.setter
     def occupation(self, occupation):
         self._occupation = occupation
-
-    def __str__(self):
-        return f"Guest({self._origin}, {self._occupation})"

@@ -1,94 +1,39 @@
-from repository.conexion.Conexion import Conexion
+from application.SecurityService import SecurityService
+from application.SeedData import SeedData
+from repository.conexion.DatabaseManager import DatabaseManager
 from application.GuestInput import GuestInput
 from application.GuestService import GuestService
 from application.BedroomInput import BedroomInput
 from application.EmployeeInput import EmployeeInput
 from application.EmployeeService import EmployeeService
+from application.BookingInput import BookingInput
 
 class Menu_App:
 
     def __init__(self):
-        self.db = Conexion(host='localhost', port=3306, user="admin", password="admin", database='hotel_saturday')
+        self.db = DatabaseManager(host="localhost", port=3306, user="admin", password="admin", database="hotel_saturday")
         self.db.create_database_if_not_exists()
         self.db.connect()
         self.db.create_tables_if_not_exist()
 
+        seeder = SeedData(self.db)
+        seeder.run()
+
+        # Nuevo: inicializar seguridad
+        self.security_service = SecurityService(self.db)
+        self.security_service.ensure_initial_users()
+
+        # Instanciar inputs
         self.guest_input = GuestInput()
         self.guest_service = GuestService()
         self.bedroom_input = BedroomInput()
         self.employee_input = EmployeeInput()
         self.employee_service = EmployeeService()
+        self.booking_input = BookingInput()
 
         self.logged_employee = None
 
-    def ensure_superadmin_exists(self):
-        """Verifica si existe al menos un superadmin y un empleado, si no, los crea automáticamente."""
-
-        # Verificar si existe algún Superadmin
-        query_superadmin = "SELECT COUNT(*) FROM employee WHERE rol = 'superadmin'"
-        result_superadmin = self.db.execute_query(query_superadmin)
-
-        if result_superadmin and result_superadmin[0][0] == 0:
-            print("\n⚡ No se encontró ningún Superadmin. Creando uno automáticamente...")
-
-            id_superadmin = 1
-            name_superadmin = "Super"
-            last_name_superadmin = "Admin"
-            phone_superadmin = "3000000000"
-            email_superadmin = "superadmin@hotel.com"
-            password_superadmin = "admin123"
-
-            # Insertar Superadmin en tablas person y employee
-            insert_person = """
-                INSERT INTO person (id, name, last_name, phone, email)
-                VALUES (%s, %s, %s, %s, %s)
-            """
-            person_values = (id_superadmin, name_superadmin, last_name_superadmin, phone_superadmin, email_superadmin)
-            self.db.execute_query(insert_person, person_values)
-
-            insert_employee = """
-                INSERT INTO employee (id, password, rol, status)
-                VALUES (%s, %s, %s, %s)
-            """
-            employee_values = (id_superadmin, password_superadmin, "superadmin", "active")
-            self.db.execute_query(insert_employee, employee_values)
-
-            print("✅ Superadmin creado exitosamente.")
-
-        # Verificar si existe algún Empleado normal
-        query_employee = "SELECT COUNT(*) FROM employee WHERE rol = 'employee'"
-        result_employee = self.db.execute_query(query_employee)
-
-        if result_employee and result_employee[0][0] == 0:
-            print("\n⚡ No se encontró ningún Empleado normal. Creando uno automáticamente...")
-
-            id_employee = 2
-            name_employee = "Empleado"
-            last_name_employee = "Normal"
-            phone_employee = "3010000000"
-            email_employee = "empleado@hotel.com"
-            password_employee = "empleado123"
-
-            # Insertar Empleado en tablas person y employee
-            insert_person = """
-                INSERT INTO person (id, name, last_name, phone, email)
-                VALUES (%s, %s, %s, %s, %s)
-            """
-            person_values = (id_employee, name_employee, last_name_employee, phone_employee, email_employee)
-            self.db.execute_query(insert_person, person_values)
-
-            insert_employee = """
-                INSERT INTO employee (id, password, rol, status)
-                VALUES (%s, %s, %s, %s)
-            """
-            employee_values = (id_employee, password_employee, "employee", "active")
-            self.db.execute_query(insert_employee, employee_values)
-
-            print("✅ Empleado normal creado exitosamente.")
-
     def init_app(self):
-        self.ensure_superadmin_exists()  # 🔥 Esto debe ser LO PRIMERO.
-
         while True:
             if not self.logged_employee:
                 self.login()
@@ -102,8 +47,9 @@ class Menu_App:
                 print("2. Registro de Empleado")
 
             print("3. Gestión de Habitaciones")
-            print("4. Cerrar Sesión")
-            print("5. Salir")
+            print("4. Gestión de Reservas")
+            print("5. Cerrar Sesión")
+            print("6. Salir")
             print("------------------------------------")
 
             option_str = input("Seleccione una opción: ")
@@ -123,8 +69,10 @@ class Menu_App:
             elif option == 3:
                 self.menu_habitaciones()
             elif option == 4:
-                self.logout()
+                self.menu_gestion_reservas()
             elif option == 5:
+                self.logout()
+            elif option == 6:
                 self.exit_app()
                 break
             else:
@@ -186,6 +134,39 @@ class Menu_App:
 
         # Continuar con el registro
         self.employee_input.register(self.db, rol)
+
+    def menu_gestion_reservas(self):
+        while True:
+            print("\n--- Gestión de Reservas (Booking) ---")
+            print("1. Crear Nueva Reserva")
+            print("2. Ver Todas las Reservas")
+            print("3. Buscar Reserva por ID")
+            print("4. Cancelar Reserva")
+            print("5. Volver al menú principal")
+            print("------------------------------------")
+            option_str = input("Seleccione una opción: ")
+            if not option_str.isdigit():
+                print("❌ Opción inválida.")
+                continue
+            try:
+                option = int(option_str)
+            except ValueError:
+                print("❌ Entrada inválida.")
+                continue
+
+            if option == 1:
+                self.booking_input.create_booking_interactive(self.db)
+            elif option == 2:
+                self.booking_input.view_all_bookings(self.db)
+            elif option == 3:
+                self.booking_input.find_booking_interactive(self.db)
+            elif option == 4:
+                self.booking_input.cancel_booking_interactive(self.db)
+            elif option == 5:
+                print("Volviendo al menú principal...")
+                break
+            else:
+                print("❌ Opción no válida.")
 
     def menu_habitaciones(self):
         while True:

@@ -1,6 +1,6 @@
 import mysql.connector
 
-class Conexion:
+class DatabaseManager:
 
     def __init__(self, host, port, user, password, database):
         self.host = host
@@ -22,9 +22,9 @@ class Conexion:
             )
             cursor = connection.cursor()
             cursor.execute(f"CREATE DATABASE IF NOT EXISTS {self.database}")
-            print(f"Base de datos '{self.database}' verificada/creada correctamente")
+            print(f"✅ Base de datos '{self.database}' verificada o creada correctamente.")
         except mysql.connector.Error as err:
-            print("Error al crear la base de datos:", err)
+            print("❌ Error al crear/verificar la base de datos:", err)
         finally:
             if cursor:
                 cursor.close()
@@ -40,15 +40,15 @@ class Conexion:
                 password=self.password,
                 database=self.database
             )
-            print("Conexión a base de datos establecida")
+            print("✅ Conexión a base de datos establecida.")
         except mysql.connector.Error as err:
-            print("Error al conectar a la base de datos:", err)
+            print("❌ Error al conectar a la base de datos:", err)
             self.connection = None
         return self.connection
 
     def create_tables_if_not_exist(self):
         if self.connection is None:
-            self.connection = self.connect()
+            self.connect()
 
         cursor = None
         try:
@@ -65,19 +65,19 @@ class Conexion:
                 );
                 """,
                 """
-                CREATE TABLE IF NOT EXISTS guest (
-                    id INT PRIMARY KEY,
-                    origin VARCHAR(100),
-                    occupation VARCHAR(100),
-                    FOREIGN KEY (id) REFERENCES person(id) ON DELETE CASCADE
-                );
-                """,
-                """
                 CREATE TABLE IF NOT EXISTS employee (
                     id INT PRIMARY KEY,
                     password VARCHAR(255) NOT NULL,
                     rol VARCHAR(50) NOT NULL,
                     status ENUM('active', 'inactive') DEFAULT 'active',
+                    FOREIGN KEY (id) REFERENCES person(id) ON DELETE CASCADE
+                );
+                """,
+                """
+                CREATE TABLE IF NOT EXISTS guest (
+                    id INT PRIMARY KEY,
+                    origin VARCHAR(100),
+                    occupation VARCHAR(100),
                     FOREIGN KEY (id) REFERENCES person(id) ON DELETE CASCADE
                 );
                 """,
@@ -103,14 +103,21 @@ class Conexion:
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     user_id INT NOT NULL,
                     bedroom_id INT NOT NULL,
-                    service_id INT,
                     check_in DATE NOT NULL,
                     check_out DATE NOT NULL,
                     total_price DECIMAL(10,2),
                     status ENUM('confirmed', 'cancelled', 'completed') DEFAULT 'confirmed',
                     FOREIGN KEY (user_id) REFERENCES person(id),
-                    FOREIGN KEY (bedroom_id) REFERENCES bedroom(id),
-                    FOREIGN KEY (service_id) REFERENCES services(id)
+                    FOREIGN KEY (bedroom_id) REFERENCES bedroom(id)
+                );
+                """,
+                """
+                CREATE TABLE IF NOT EXISTS booking_service (
+                    booking_id INT NOT NULL,
+                    service_id INT NOT NULL,
+                    PRIMARY KEY (booking_id, service_id),
+                    FOREIGN KEY (booking_id) REFERENCES booking(id) ON DELETE CASCADE,
+                    FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE
                 );
                 """
             ]
@@ -118,22 +125,16 @@ class Conexion:
             for query in queries:
                 cursor.execute(query)
 
-            print("Tablas creadas o verificadas correctamente.")
-
+            print("✅ Tablas creadas o verificadas correctamente.")
         except mysql.connector.Error as err:
-            print("Error al crear las tablas:", err)
+            print("❌ Error al crear/verificar las tablas:", err)
         finally:
             if cursor:
                 cursor.close()
 
-    def disconnect(self):
-        if self.connection:
-            self.connection.close()
-            print("Conexión Cerrada")
-
     def execute_query(self, query, params=None):
         if self.connection is None:
-            print("No hay conexión a la base de datos.")
+            print("❌ No hay conexión activa con la base de datos.")
             return None
 
         cursor = None
@@ -141,12 +142,17 @@ class Conexion:
             cursor = self.connection.cursor(buffered=True)
             cursor.execute(query, params)
             self.connection.commit()
-            print("Consulta ejecutada exitosamente")
+
             if query.strip().lower().startswith('select'):
                 return cursor.fetchall()
         except mysql.connector.Error as err:
-            print("Error al ejecutar la consulta:", err)
+            print("❌ Error al ejecutar consulta:", err)
             return None
         finally:
             if cursor:
                 cursor.close()
+
+    def disconnect(self):
+        if self.connection:
+            self.connection.close()
+            print("✅ Conexión a base de datos cerrada.")

@@ -7,8 +7,6 @@ class GuestRepository:
         self.guest = Guest
 
     def create_guest_repository(self, guest, db):
-        """ Crea un nuevo huésped registrándolo en las tablas person y guest """
-
         # Validar si el ID ya existe en person
         query_check_id = "SELECT id FROM person WHERE id = %s"
         result_id = db.execute_query(query_check_id, (guest.person.id,))
@@ -42,11 +40,7 @@ class GuestRepository:
             INSERT INTO guest (id, origin, occupation)
             VALUES (%s, %s, %s)
         """
-        values_guest = (
-            guest.person.id,
-            guest.origin,
-            guest.occupation
-        )
+        values_guest = (guest.person.id, guest.origin, guest.occupation)
         db.execute_query(query_guest, values_guest)
 
         print("✅ Huésped registrado correctamente.")

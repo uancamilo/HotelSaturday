@@ -2,10 +2,10 @@ from domain.models.Person import Person
 
 class Guest:
 
-    def __init__(self, person, origin, occupation):
-        self._person = person          # Objeto Person asociado
-        self._origin = origin
-        self._occupation = occupation
+    def __init__(self, person=None, origin=None, occupation=None):
+        self.person = person
+        self.origin = origin
+        self.occupation = occupation
 
     # Getter y Setter para person
     @property

@@ -12,24 +12,24 @@ class GuestInput:
         self.guest_repository = GuestRepository()
 
 
-    def register(self, guest , db):
-        id = int(input("Ingrese su documento de identidad"))
+    def register(self, db):
+        id = int(input("Ingrese su documento de identidad: "))
         self.guest.id = id
-        name = input("Ingrese su nombre")
+        name = input("Ingrese su nombre: ")
         self.guest.name = name
-        last_name = input("Ingrese su apellido")
+        last_name = input("Ingrese su apellido: ")
         self.guest.last_name = last_name
-        phone = input("Ingrese su teléfono")
+        phone = input("Ingrese su teléfono: ")
         self.guest.phone = phone
-        email = input("Ingrese su correo")
+        email = input("Ingrese su correo: ")
         self.guest.email = email
-        password = input("Ingrese su contraseña")
+        password = input("Ingrese su contraseña: ")
         self.guest.password = password
-        status = input("Seleccione el estado")
+        status = input("Seleccione el estado: ")
         self.guest.status = status
-        origin = input("Ingrese su ciudad de origen")
+        origin = input("Ingrese su ciudad de origen: ")
         self.guest.origin = origin
-        occupation = input("Ingrese su ocupacion")
+        occupation = input("Ingrese su ocupacion: ")
         self.guest.occupation = occupation
         self.guest_repository.create_guest_repository(self.guest, db)
 
@@ -37,7 +37,3 @@ class GuestInput:
 
     def print_data(self):
         self.guest_service.print_data_service()
-
-
-
-

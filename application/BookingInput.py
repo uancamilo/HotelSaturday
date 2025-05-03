@@ -1,5 +1,6 @@
 from domain.models.Booking import Booking
 from application.BookingService import BookingService
+import re
 
 class BookingInput:
 
@@ -9,11 +10,19 @@ class BookingInput:
     def create_booking_interactive(self, db):
         print("\n--- Crear Nueva Reserva ---")
 
+        date_pattern = r"^\d{4}-\d{2}-\d{2}$"
+
         try:
             user_id = int(input("ID del huésped: ").strip())
             bedroom_id = int(input("ID de la habitación: ").strip())
             check_in = input("Fecha de check-in (YYYY-MM-DD): ").strip()
+            if not re.match(date_pattern, check_in):
+                print("❌ El formato de la fecha debe ser YYYY-MM-DD.")
+                return
             check_out = input("Fecha de check-out (YYYY-MM-DD): ").strip()
+            if not re.match(date_pattern, check_out):
+                print("❌ El formato de la fecha debe ser YYYY-MM-DD.")
+                return
 
             try:
                 total_price = float(input("Precio total (COP): ").strip())

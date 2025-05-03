@@ -24,11 +24,12 @@ class BookingInput:
                 print("❌ El formato de la fecha debe ser YYYY-MM-DD.")
                 return
 
-            try:
-                total_price = float(input("Precio total (COP): ").strip())
-            except ValueError:
-                print("❌ El precio total debe ser un número.")
+            price_input = input("Precio total (COP): ").strip()
+            if not re.match(r"^\d+(\.\d{1,2})?$", price_input):
+                print("❌ El precio debe ser un número válido (solo dígitos y opcionalmente decimales).")
                 return
+            total_price = float(price_input)
+
 
             services = []
             while True:

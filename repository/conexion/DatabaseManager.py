@@ -152,6 +152,23 @@ class DatabaseManager:
             if cursor:
                 cursor.close()
 
+    def fetch_one(self, query, params=None):
+        if self.connection is None:
+            print("❌ No hay conexión activa con la base de datos.")
+            return None
+
+        cursor = None
+        try:
+            cursor = self.connection.cursor(buffered=True)
+            cursor.execute(query, params)
+            return cursor.fetchone()
+        except mysql.connector.Error as err:
+            print("❌ Error al ejecutar consulta (fetch_one):", err)
+            return None
+        finally:
+            if cursor:
+                cursor.close()
+
     def disconnect(self):
         if self.connection:
             self.connection.close()

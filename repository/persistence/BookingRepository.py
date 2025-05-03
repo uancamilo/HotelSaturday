@@ -7,6 +7,14 @@ class BookingRepository:
 
     def create_booking(self, booking, db):
         """Crea una nueva reserva en la base de datos."""
+
+        # Paso 1: Verificar que el usuario exista
+        user_check_query = "SELECT id FROM person WHERE id = %s"
+        user_exists = db.fetch_one(user_check_query, (booking.user_id,))
+        if not user_exists:
+            raise ValueError(f"El usuario con id {booking.user_id} no existe en la tabla person.")
+
+        # Paso 2: Insertar booking
         query = """
             INSERT INTO booking (user_id, bedroom_id, check_in, check_out, total_price, status)
             VALUES (%s, %s, %s, %s, %s, %s)
@@ -21,7 +29,7 @@ class BookingRepository:
         )
         db.execute_query(query, values)
 
-        # Insertar los servicios asociados en booking_service
+        # Paso 3: Insertar servicios asociados (si hay)
         if booking.services:
             for service_id in booking.services:
                 query_service = """

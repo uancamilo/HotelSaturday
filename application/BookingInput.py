@@ -31,19 +31,23 @@ class BookingInput:
             total_price = float(price_input)
 
 
-            services = []
+            services = []   
             while True:
                 add_service = input("¿Desea agregar un servicio adicional? (s/n): ").strip().lower()
+
+                if not re.match(r"^[sn]$", add_service):
+                    print("❌ Opción inválida. Responda 's' o 'n'.")
+                    continue
+
                 if add_service == "s":
-                    try:
-                        service_id = int(input("ID del servicio a agregar: ").strip())
+                    service_input = input("ID del servicio a agregar: ").strip()
+                    if re.match(r"^\d+$", service_input):
+                        service_id = int(service_input)
                         services.append(service_id)
-                    except ValueError:
-                        print("❌ El ID del servicio debe ser numérico.")
+                    else:
+                        print("❌ El ID del servicio debe contener solo números enteros positivos.")
                 elif add_service == "n":
                     break
-                else:
-                    print("❌ Opción inválida. Responda 's' o 'n'.")
 
             # Crear el objeto Booking
             booking = Booking(

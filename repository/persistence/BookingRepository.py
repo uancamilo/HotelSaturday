@@ -30,8 +30,6 @@ class BookingRepository:
                 """
                 db.execute_query(query_service, (service_id,))
 
-        print("✅ Reserva creada exitosamente.")
-
     def list_all_bookings(self, db):
         """Lista todas las reservas registradas."""
         query = """

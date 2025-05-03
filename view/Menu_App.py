@@ -11,7 +11,7 @@ from application.BookingInput import BookingInput
 class Menu_App:
 
     def __init__(self):
-        self.db = DatabaseManager(host="localhost", port=3306, user="admin", password="admin", database="hotel_saturday")
+        self.db = DatabaseManager(host="localhost", port=3306, user="root", password="", database="hotel_saturday")
         self.db.create_database_if_not_exists()
         self.db.connect()
         self.db.create_tables_if_not_exist()

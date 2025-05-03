@@ -1,4 +1,5 @@
 from repository.persistence.BedroomRepository import BedroomRepository
+from domain.models.Bedroom import Bedroom 
 
 class BedroomInput:
 
@@ -35,7 +36,9 @@ class BedroomInput:
             except ValueError:
                 print("❌ El precio debe ser un número.")
 
-        self.bedroom_repository.create_bedroom(number, bedroom_type, price, db)
+        bedroom = Bedroom(number=number, bedroom_type=bedroom_type, price=price) 
+
+        self.bedroom_repository.create_bedroom(bedroom, db) 
         print("✅ Habitación registrada correctamente.")
 
     def list_bedrooms(self, db):

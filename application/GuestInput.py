@@ -41,9 +41,20 @@ class GuestInput:
                 print("❌ Formato de correo inválido. Intente nuevamente.")
 
         # Capturar ciudad de origen
-        origin = input("Ciudad de origen del huésped: ").strip()
+        while True:
+            origin = input("Ciudad de origen del huésped: ").strip()
+            if re.match(r"^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,50}$", origin):
+                break
+            else:
+                print("❌ Ciudad inválida. Solo letras y espacios.")
+
         # Capturar ocupación
-        occupation = input("Ocupación del huésped: ").strip()
+        while True:
+            occupation = input("Ocupación del huésped: ").strip()
+            if re.match(r"^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,50}$", occupation):
+                break
+            else:
+                print("❌ Ocupación inválida. Solo letras y espacios.")
 
         # Crear el objeto Person
         person = Person(

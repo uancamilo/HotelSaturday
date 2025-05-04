@@ -25,7 +25,12 @@ class GuestInput:
         # Capturar apellido
         last_name = input("Apellido del huésped: ").strip()
         # Capturar teléfono
-        phone = input("Teléfono del huésped: ").strip()
+        while True:
+            phone = input("Teléfono del huésped: ").strip()
+            if re.match(r"^\d{7,10}$", phone):
+                break
+            else:
+                print("❌ Teléfono inválido. Debe tener entre 7 y 10 dígitos.")
 
         # Capturar email con validación
         while True:

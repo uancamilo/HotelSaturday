@@ -1,3 +1,4 @@
+import re
 from repository.persistence.BedroomRepository import BedroomRepository
 from domain.models.Bedroom import Bedroom 
 
@@ -8,7 +9,13 @@ class BedroomInput:
 
     def create_bedroom(self, db):
         print("\n--- Crear Nueva Habitación ---")
-        number = input("Número de habitación: ").strip()
+
+        while True:
+            number = input("Número de habitación: ").strip()
+            if re.match(r'^\d+$', number):
+                break
+            else:
+                print("❌ El número de habitación debe contener solo dígitos.")
 
         while True:
             print("Tipo de habitación:")

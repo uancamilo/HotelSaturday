@@ -37,11 +37,12 @@ class BedroomInput:
                 print("❌ Opción inválida. Intente de nuevo.")
 
         while True:
-            try:
-                price = float(input("Precio por noche (COP): ").strip())
+            price_input = input("Precio por noche (COP): ").strip()
+            if re.match(r'^\d+(\.\d{1,2})?$', price_input):
+                price = float(price_input)
                 break
-            except ValueError:
-                print("❌ El precio debe ser un número.")
+            else:
+                print("❌ El precio debe ser un número válido (puede incluir decimales).")
 
         bedroom = Bedroom(number=number, bedroom_type=bedroom_type, price=price) 
 

@@ -1,5 +1,6 @@
 from domain.models.Booking import Booking
 from application.BookingService import BookingService
+import re
 
 class BookingInput:
 
@@ -9,31 +10,44 @@ class BookingInput:
     def create_booking_interactive(self, db):
         print("\n--- Crear Nueva Reserva ---")
 
+        date_pattern = r"^\d{4}-\d{2}-\d{2}$"
+
         try:
             user_id = int(input("ID del huésped: ").strip())
             bedroom_id = int(input("ID de la habitación: ").strip())
             check_in = input("Fecha de check-in (YYYY-MM-DD): ").strip()
+            if not re.match(date_pattern, check_in):
+                print("❌ El formato de la fecha debe ser YYYY-MM-DD.")
+                return
             check_out = input("Fecha de check-out (YYYY-MM-DD): ").strip()
-
-            try:
-                total_price = float(input("Precio total (COP): ").strip())
-            except ValueError:
-                print("❌ El precio total debe ser un número.")
+            if not re.match(date_pattern, check_out):
+                print("❌ El formato de la fecha debe ser YYYY-MM-DD.")
                 return
 
-            services = []
+            price_input = input("Precio total (COP): ").strip()
+            if not re.match(r"^\d+(\.\d{1,2})?$", price_input):
+                print("❌ El precio debe ser un número válido (solo dígitos y opcionalmente decimales).")
+                return
+            total_price = float(price_input)
+
+
+            services = []   
             while True:
                 add_service = input("¿Desea agregar un servicio adicional? (s/n): ").strip().lower()
+
+                if not re.match(r"^[sn]$", add_service):
+                    print("❌ Opción inválida. Responda 's' o 'n'.")
+                    continue
+
                 if add_service == "s":
-                    try:
-                        service_id = int(input("ID del servicio a agregar: ").strip())
+                    service_input = input("ID del servicio a agregar: ").strip()
+                    if re.match(r"^\d+$", service_input):
+                        service_id = int(service_input)
                         services.append(service_id)
-                    except ValueError:
-                        print("❌ El ID del servicio debe ser numérico.")
+                    else:
+                        print("❌ El ID del servicio debe contener solo números enteros positivos.")
                 elif add_service == "n":
                     break
-                else:
-                    print("❌ Opción inválida. Responda 's' o 'n'.")
 
             # Crear el objeto Booking
             booking = Booking(

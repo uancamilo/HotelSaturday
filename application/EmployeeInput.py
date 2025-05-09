@@ -39,14 +39,13 @@ class EmployeeInput:
 
         # Capturar contraseña
         while True:
-            password = input("Contraseña del empleado: ").strip()
-            if len(password) >= 6:
+             password = input("Contraseña del empleado: ").strip()
+    
+             if re.fullmatch(r"(?=.*[A-Za-z])(?=(?:.*\d){5})[A-Za-z\d]+", password):
                 break
-            else:
-                print("❌ La contraseña debe tener al menos 6 caracteres.")
-
-        # 🔵 No pedimos el rol aquí porque ya lo recibimos por parámetro
-
+             else:
+                print("❌ La contraseña debe tener exactamente 5 números y al menos 1 letra.")
+           
         # Capturar estado
         while True:
             status_input = input("¿Estado del empleado? (active/inactive) [default: active]: ").strip().lower()
